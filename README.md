@@ -1,7 +1,7 @@
 # kafka-cluster with minikube
 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
-**Table of Contents**
+**Contenido**
 
 - [kafka-cluster with minikube](#kafka-cluster-with-minikube)
     - [Minikube configuration](#minikube-configuration)
@@ -20,8 +20,8 @@
 
 <!-- markdown-toc end -->
 
-## Minikube configuration
-Suggested minikube start configuration:
+## Minikube configuracion
+Sugestion de configuracion minikube start:
 ```
 minikube start --memory=6144 --cpus=4
 ```
@@ -37,26 +37,26 @@ kubectl apply -f 02-kafka/
 kubectl apply -f 03-yahoo-kafka-manager/
 kubectl apply -f 04-kafka-monitor/
 
-# depends on creating a new cluster: kafka-ca2
-# replace in all previous files s/kafka-ca1/kafka-ca2 and run steps: 00, 01, and 02.
+# depende de la creación de un nuevo clúster: kafka-ca2
+# reemplazar en todos los archivos anteriores s/kafka-ca1/kafka-ca2 y ejecutar los pasos: 00, 01, and 02.
 kubectl apply -f 05-kafka-mirrormaker/
 ```
 
-### Configure kafka-manager
+### Configurar kafka-manager
 
-Open kafka-manager:
+En kafka-manager:
 
 ``` bash
 open $(minikube service -n kafka-ca1 kafka-manager --url)
 ```
 
-Add new cluster, and use the following data for `Cluster Zookeeper Hosts`:
+Agregue nuevo cluster, y utilice los siguientes datos para `Cluster Zookeeper Hosts`:
 
 ```
 zookeeper-service:2181
 ```
 
-## Monitor cluster resources
+## Monitoreo de cluster resources
 
 ``` bash
 watch -n 1 kubectl -n kafka-ca1 get deployments
@@ -84,7 +84,7 @@ kubectl -n kafka-ca1 exec kafka-monitor-{hash} -i -t bash
 cd kafka-monitor-1.1.0
 ```
 
-### Monitor end-to-end a single cluster + JMX
+### Monitoreo end-to-end en unico cluster + JMX
 
 Run the following:
 ```bash
@@ -93,7 +93,7 @@ KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.au
   --topic testtopic
 ```
 
-### Monitor a single cluster + JMX using more detailed configuration kafka-monitor.properties
+### Monitoreo a unico cluster + JMX using more detailed configuration kafka-monitor.properties
 
 ```bash
 KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.port=9999 -Dcom.sun.management.jmxremote.rmi.port=9999 -Djava.rmi.server.hostname=127.0.0.1 " \
@@ -101,7 +101,7 @@ KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.au
 ```
 
 
-### Monitor end-to-end multi-cluster + JMX
+### Monitoreo end-to-end multi-cluster + JMX
 
 Run the following command:
 ```bash
@@ -109,14 +109,14 @@ KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.au
   exec ./bin/kafka-monitor-start.sh config/multi-cluster-monitor.properties
 ```
 
-## Connect to JMX metrics
+## Connecte al JMX metrics
 
-Forward the port:
+Port Forward:
 ```bash
 kubectl -n kafka-ca1 port-forward kafka-monitor-{hash} 9999
 ```
 
-Connect using jconsole/jvisualvm:
+Connecte usando jconsole/jvisualvm:
 ```bash
 jconsole localhost:9999
 ```
@@ -133,9 +133,3 @@ jconsole localhost:9999
 <img src="resources/kafka-manaker-kafka-ca1.png" width="40%">
 
 
-# Changelog
-
-- 2018-09-28, Added monitor configuration using config maps
-- 2018-09-25, Added kafka-monitor recent image for kafka-monitor 1.1.x
-- 2018-09-24, Big refactor, changed per broker config to a single StatefulSet
-  - Changed zookeeper image to use the one provided by dockerhub
